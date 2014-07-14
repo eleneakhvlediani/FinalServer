@@ -27,9 +27,10 @@ public class KKMultiServerThread extends Thread{
 	            out.println("YourId:"+outputLine);
 
 	            while ((inputLine = in.readLine()) != null) {
-	            	
-	            	if((inputLine.length()>CONNECTION_STRING.length()+1)&&inputLine.substring(0,CONNECTION_STRING.length()-1).equals(CONNECTION_STRING)){
-	            		String wantToConnectId = inputLine.substring(CONNECTION_STRING.length()-1);
+	            	//System.out.println(inputLine.substring(0,CONNECTION_STRING.length()-1));
+	            	if((inputLine.length()>CONNECTION_STRING.length())&&inputLine.substring(0,CONNECTION_STRING.length()).equals(CONNECTION_STRING)){
+	            		String wantToConnectId = inputLine.substring(CONNECTION_STRING.length());
+	            		System.out.println(wantToConnectId);
 	            	}
 	                outputLine = "ok";
 	                System.out.println(inputLine);
