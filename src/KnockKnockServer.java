@@ -4,30 +4,28 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 
 import javax.imageio.IIOException;
 
+
+
 public class KnockKnockServer {
+	
+	static HashMap<String, Socket> hashMap = new HashMap<String,Socket>();
 	public static void main(String[] args) throws IIOException {
 
-		
-		int portNumber = 8090;
-
-		try (ServerSocket serverSocket = new ServerSocket(
-				portNumber);
-				Socket clientSocket = serverSocket.accept();
-				
-				PrintWriter out = new PrintWriter(
-						clientSocket.getOutputStream(), true);
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						clientSocket.getInputStream()));) {
-			System.out.println(clientSocket.toString());
-			String inputLine;
-			System.out.println("connected");
-			while ((inputLine = in.readLine()) != null) {
+		int portNumber = 8094;
+		boolean listening = true;
+		try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
 			
-				System.out.println(inputLine);
-			}
+			 while (listening) {
+				 Socket acc = serverSocket.accept();
+				 String id = generateId();
+				 hashMap.put(id, acc);
+				 new KKMultiServerThread(id,acc).start();
+			 }
+
 		} catch (IOException e) {
 			System.out
 					.println("Exception caught when trying to listen on port "
@@ -36,4 +34,16 @@ public class KnockKnockServer {
 
 		}
 	}
+	
+	static int id = 0 ;
+	private static String generateId() {
+		String retId = "" +id;
+		id++;
+		return retId;
+	}
+	
+	
+	
+	
+
 }
