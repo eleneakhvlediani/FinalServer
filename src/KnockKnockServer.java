@@ -15,7 +15,7 @@ public class KnockKnockServer {
 	static HashMap<String, Socket> hashMap = new HashMap<String,Socket>();
 	public static void main(String[] args) throws IIOException {
 
-		int portNumber = 8099;
+		int portNumber = 9090;
 		boolean listening = true;
 		try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
 			System.out.println("connected");

@@ -12,6 +12,7 @@ public class KKMultiServerThread extends Thread {
 	private static final String WANTS_CONNECTION_STRING = "wantsConnection:";
 	private static final String GAME_STARTED = "gameStarted:";
 	private static final String SPEED_UP = "speedUp:";
+	private static final String FINISH = "finish:";
 
 	private static HashMap<String, String> players = new HashMap<String, String>();
 
@@ -34,11 +35,11 @@ public class KKMultiServerThread extends Thread {
 			while ((inputLine = in.readLine()) != null) {
 				// System.out.println(inputLine.substring(0,CONNECTION_STRING.length()-1));
 				checkConnectionRequest(inputLine, out);
-				checkSpeedUpRequest(inputLine, out);
+				checkSpeedUpRequest(inputLine);
 				System.out.println(inputLine);
-//				out.println(outputLine);
-				if (outputLine.equals("Finish"))
+				if(checkFinishedGame(inputLine)){
 					break;
+				}
 			}
 			socket.close();
 		} catch (IOException e) {
@@ -46,6 +47,26 @@ public class KKMultiServerThread extends Thread {
 		}
 	}
 	
+	private boolean checkFinishedGame(String inputLine) {
+		if ((inputLine.length() == FINISH.length())
+				&& inputLine.equals(FINISH)) {
+			String enemyId = players.get(id);
+			System.out.println(enemyId);
+			Socket enemySocket = KnockKnockServer.findSocket(enemyId);
+			try {
+				PrintWriter out = new PrintWriter(enemySocket.getOutputStream(),
+						true);
+				out.println(FINISH);
+			
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return true;
+		}
+		return false;
+	}
+
 	private void checkConnectionRequest(String inputLine,PrintWriter out)
 	{
 		if ((inputLine.length() > CONNECTION_STRING.length())
@@ -62,14 +83,14 @@ public class KKMultiServerThread extends Thread {
 		}
 	}
 
-	private void checkSpeedUpRequest(String inputLine,PrintWriter out)
+	private void checkSpeedUpRequest(String inputLine)
 	{
 		if ((inputLine.length() > SPEED_UP.length())
 				&& inputLine.substring(0, SPEED_UP.length())
 						.equals(SPEED_UP)) {
 			String speed = inputLine
 					.substring(SPEED_UP.length());
-			System.out.println(speed);
+			
 
 			SendSpeedUpNotification(speed);
 		
@@ -78,6 +99,7 @@ public class KKMultiServerThread extends Thread {
 
 	private void SendSpeedUpNotification(String speed) {
 		String enemyId = players.get(id);
+		System.out.println(enemyId);
 		Socket enemySocket = KnockKnockServer.findSocket(enemyId);
 		try {
 			PrintWriter out = new PrintWriter(enemySocket.getOutputStream(),
