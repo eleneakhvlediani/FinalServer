@@ -15,10 +15,10 @@ public class KnockKnockServer {
 	static HashMap<String, Socket> hashMap = new HashMap<String,Socket>();
 	public static void main(String[] args) throws IIOException {
 
-		int portNumber = 8095;
+		int portNumber = 8099;
 		boolean listening = true;
 		try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
-			
+			System.out.println("connected");
 			 while (listening) {
 				 Socket acc = serverSocket.accept();
 				 String id = generateId();
@@ -41,7 +41,9 @@ public class KnockKnockServer {
 		id++;
 		return retId;
 	}
-	
+	public static Socket findSocket(String id){
+		return hashMap.get(id);
+	}
 	
 	
 	
