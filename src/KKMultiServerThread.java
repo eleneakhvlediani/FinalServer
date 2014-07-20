@@ -12,7 +12,8 @@ public class KKMultiServerThread extends Thread {
 	private static final String WANTS_CONNECTION_STRING = "wantsConnection:";
 	private static final String GAME_STARTED = "gameStarted:";
 	private static final String SPEED_UP = "speedUp:";
-	private static final String FINISH = "finish:";
+	private static final String PLAYER_WON = "playerWon";
+	private static final String PLAYER_LOST = "playerLost";
 
 	private static HashMap<String, String> players = new HashMap<String, String>();
 
@@ -37,7 +38,7 @@ public class KKMultiServerThread extends Thread {
 				checkConnectionRequest(inputLine, out);
 				checkSpeedUpRequest(inputLine);
 				System.out.println(inputLine);
-				if(checkFinishedGame(inputLine)){
+				if(checkFinishedGame(inputLine,PLAYER_WON,PLAYER_LOST)||checkFinishedGame(inputLine,PLAYER_LOST,PLAYER_WON)){
 					break;
 				}
 			}
@@ -47,16 +48,17 @@ public class KKMultiServerThread extends Thread {
 		}
 	}
 	
-	private boolean checkFinishedGame(String inputLine) {
-		if ((inputLine.length() == FINISH.length())
-				&& inputLine.equals(FINISH)) {
+	private boolean checkFinishedGame(String inputLine,String finish,String response) {
+		if ((inputLine.length() == finish.length())
+				&& inputLine.equals(finish)) {
 			String enemyId = players.get(id);
 			System.out.println(enemyId);
 			Socket enemySocket = KnockKnockServer.findSocket(enemyId);
 			try {
 				PrintWriter out = new PrintWriter(enemySocket.getOutputStream(),
 						true);
-				out.println(FINISH);
+				
+				out.println(response);
 			
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
